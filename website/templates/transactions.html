@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/transactions.css') }}">
+
+    <title>Transactions</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><p>The Piggy Bank</p></div>
+            <ul>
+                <li><a href="{{ url_for('views.home') }}">Home</a></li>
+                <li><a href="{{ url_for('views.account') }}">Account</a></li>
+                <li><a href="{{ url_for('views.transactions') }}">Transactions</a></li>
+                <li><a href="{{ url_for('views.plans') }}">Plans</a></li>
+                <li><a href="{{ url_for('views.help') }}">Help</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="user-details">
+            <div class="details">
+                <p><strong>User ID:</strong> {{ user.id }}</p>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <h2><strong>Current Balance:</strong> {{ user.balance }}</h2>
+            </div>
+        </section>
+
+        <section class="transaction-history">
+            <h2>Transaction History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Date/Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.tid }}</td>
+                        <td>{{ transaction.t_type }}</td>
+                        <td>{{ transaction.amt }}</td>
+                        <td>{{ transaction.time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; The Piggy Bank 2024</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQs</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}">
+    <title>Home</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><p>The Piggy Bank</p></div>
+        <ul>
+            <li><a href="{{ url_for('views.home') }}">Home</a></li>
+            <li><a href="{{ url_for('views.account') }}">Account</a></li>
+            <li><a href="{{ url_for('views.transactions') }}">Transactions</a></li>
+            <li><a href="{{ url_for('views.plans') }}">Plans</a></li>
+            <li><a href="{{ url_for('views.help') }}">Help</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li> 
+        </ul>
+        </div>
+    </nav>
+  <h1>Frequently Asked Questions</h1>
+  <div class="faq-container">
+
+    <div class="faq-item">
+      <div class="faq-question">
+        <p>1. What types of accounts do you offer?</p>
+      </div>
+      <div class="faq-answer">
+        <p>Most banks offer a variety of accounts to suit different needs, 
+            such as checking accounts for everyday transactions, savings accounts for 
+            building your nest egg, and money market accounts for earning a little interest on your savings.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">
+          <p>2. What are my ATM options?</p>
+        </div>
+        <div class="faq-answer">
+          <p>Many banks offer access to a network of ATMs where you can withdraw cash and make deposits. You may be charged fees for using ATMs outside your bank's network.
+
+          </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">
+          <p>3. How do I use online banking?</p>
+        </div>
+        <div class="faq-answer">
+          <p>Most banks offer online banking, which allows you to view your account balance, transfer funds, and pay bills electronically. You'll need to enroll for online banking and create a secure login.
+        </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">
+          <p>4. What are debit and credit cards?</p>
+        </div>
+        <div class="faq-answer">
+          <p>Debit cards deduct money directly from your checking account when you make a purchase. Credit cards allow you to borrow money from the bank to make purchases, and you'll need to repay the balance each month to avoid interest charges.</p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">
+          <p>5. What are bank fees?</p>
+        </div>
+        <div class="faq-answer">
+          <p>Banks may charge fees for various services, such as monthly account maintenance, ATM withdrawals, and overdrafts. It's important to understand your bank's fee schedule before opening an account. </p>
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">
+          <p>6. How do I keep my account safe?</p>
+        </div>
+        <div class="faq-answer">
+          <p>Here are some tips:<br>
+
+            * Memorize your PIN and don't share it with anyone. <br>
+            * Beware of phishing scams - don't click on suspicious links or attachments in emails or texts.<br>
+            * Review your bank statements regularly and report any unauthorized transactions immediately.</p>
+        </div>
+    </div>
+
+    </div>
+  <p class="last">Still have questions? Contact our customer support team at [phone number].</p>
+<footer>
+    <p>&copy; The Piggy Bank 2024</p>
+</footer>
+</body>
+</html>

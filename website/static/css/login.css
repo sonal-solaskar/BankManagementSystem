@@ -1,0 +1,63 @@
+body{
+    background-color: ivory;
+    overflow: hidden;
+}
+
+h1{
+    text-align: center;
+    font-size: 35px;
+}
+
+form{
+    text-align: center;
+}
+
+input{
+    font-size: 20px;
+    width: 400px;
+    height: 30px;
+    border-radius: 5px;
+}
+
+button{
+    font-size: 17px;
+    width: 180px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover{
+    background-color: rgb(31, 67, 67);
+    color: white;
+}
+
+.login-form{
+    transform: translateY(60%);
+    text-align: center;
+}
+
+.login-form label{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+a{
+    font-size: 20px;
+    color: black;
+    text-decoration: none;
+    font-weight: bolder;
+}
+
+a:hover{
+    text-decoration: underline;
+}
+
+footer {
+    transform: translateY(420%);
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(31, 67, 67);
+}

@@ -1,0 +1,62 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <title>Register</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><p>The Piggy Bank</p></div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="reg-form">
+            <h1>Welcome to The Piggy Bank</h1>           
+            <form method="POST">  
+            <label>Username: </label><input type="text" placeholder="Username" name="username" >
+            <br><br><label>Mobile: </label><input type="tel" placeholder="Mobile Number" name="mobile" >
+            <br><br><label>Age: </label><input type="text" placeholder="Age" name="age" >
+            <br><br><label>Gender: </label> 
+            <select name="gender" id="gender">
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+            <br><br><label>Account Type:</label>
+            <select name="account" id="account">
+                <option value="">Select Account type</option>
+                <option value="Current">Current</option>
+                <option value="Savings">Savings</option>
+            </select>                     
+            <br><br><label>Password: </label><input type="password" placeholder="Password" name="password" >
+            <br><br><label>Create PIN: </label><input type="password" placeholder="Create PIN" name="pin" >
+            <br><br><button type="submit">Register</button>
+            </form>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                {% if category == 'rerror' %}
+                    <div class="alert alert-danger alert-dismissible show" role="alert">
+                        {{ message }}
+                    </div>
+                {% elif category == 'rsuccess' %}
+                    <div class="alert alert-success alert-dismissible show" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+          </div>    
+    </main>
+    <footer>
+        <p>&copy; The Piggy Bank 2024</p>
+    </footer>
+    
+</body>
+</html> 

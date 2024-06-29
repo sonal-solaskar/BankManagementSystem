@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/acc.css') }}">
+    <title>Account</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><p>The Piggy Bank</p></div>
+        <ul>
+            <li><a href="{{ url_for('views.home') }}">Home</a></li>
+            <li><a href="{{ url_for('views.account') }}">Account</a></li>
+            <li><a href="{{ url_for('views.transactions') }}">Transactions</a></li>
+            <li><a href="{{ url_for('views.plans') }}">Plans</a></li>
+            <li><a href="{{ url_for('views.help') }}">Help</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li> 
+        </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="account-details">
+            <h2>Account Details</h2><br><br>
+            <div class="account-info">
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Mobile:</strong> {{ user.mobile }}</p>
+                <p><strong>Gender:</strong> {{ user.gender }}</p>
+                <p><strong>Age:</strong> {{ user.age }}</p>
+                <p><strong>Account Type:</strong> {{ user.account }}</p>
+                <p><strong>Balance:</strong> {{ user.balance }}</p> 
+            </div>
+            
+        </section>
+    </main>
+    <footer>
+    <p>&copy; The Piggy Bank 2024</p>
+    </footer>
+</body>
+</html>

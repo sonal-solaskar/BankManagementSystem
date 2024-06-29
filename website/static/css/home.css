@@ -1,0 +1,75 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+main {
+    padding: 40px;
+}
+
+section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+.help-section, .contact-section {
+    flex-wrap: wrap;
+}
+
+.help-item, .contact-item {
+    width: 45%;
+    text-align: center;
+    background-color: white;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.help-item img, .contact-item img {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.help-item h2, .contact-item h2 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.help-item p, .contact-item p {
+    line-height: 1.5;
+}
+
+
+
+.help-item a, .contact-item a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+}
+
+.help-item a:hover , .contact-item a:hover{
+    text-decoration: underline;
+    color: #000000;
+    font-weight: bold;
+}
+
+
+footer {
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(31, 67, 67);
+}

@@ -1,0 +1,42 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+}
+  
+h1 {
+    text-align: center;
+}
+  
+.faq-container {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+  
+.faq-item {
+    margin-bottom: 1rem;
+}
+  
+.faq-question {
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+  
+.faq-answer {
+    padding-left: 1rem;
+}
+
+
+.last{
+    text-align: center;
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(31, 67, 67);
+}

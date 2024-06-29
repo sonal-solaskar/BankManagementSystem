@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2em;
+    text-align: center;
+}
+
+main {
+    padding: 40px;
+}
+
+/* section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+} */
+
+main p{
+    font-size: 19px;
+    text-align: center;
+}
+
+footer {
+    transform: translateY(130%);
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(31, 67, 67);
+}

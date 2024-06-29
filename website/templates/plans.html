@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plans.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><p>The Piggy Bank</p></div>
+        <ul>
+            <li><a href="{{ url_for('views.home') }}"> Home</a></li>
+            <li><a href="{{ url_for('views.account') }}">Account</a></li>
+            <li><a href="{{ url_for('views.transactions') }}">Transactions</a></li>
+            <li><a href="{{ url_for('views.plans') }}">Plans</a></li>
+            <li><a href="{{ url_for('views.help') }}">Help</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li> 
+        </ul>
+        </div>
+    </nav>
+    
+    <main>
+        <section class="help-section">
+            <div class="help-item">
+                <img src="{{url_for('static', filename='p5.jpg')}}" alt="FAQ">
+            </div>
+            <div class="help-content">
+                <h2> Grow Your Savings & Get Rewarded Daily</h2>
+                <p>Discover high-yield Savings Accounts & feature-rich Checking Accounts that work for you.</p>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            
+            <div class="contact-content">
+                <h2> Savings Accounts:</h2>
+                <p> 
+                    Basic Savings: No monthly fee, minimum balance requirement $25, interest rate 0.75% APY
+                <br> High-Interest Savings: $7 monthly fee, minimum balance requirement $10,000, interest rate 2.25% APY
+                </p>
+            </div>
+            <div class="contact-item">
+                <img src="{{url_for('static', filename='p1.jpg')}}" alt="Phone">
+            </div>
+        </section>
+
+        <section class="help-section">
+            <div class="help-item">
+                <img src="{{url_for('static', filename='p3.jpg')}}" alt="FAQ">
+            </div>
+            <div class="help-content">
+                <h2> Checking Accounts:</h2>
+                <p> 
+                    Everyday Checking: $5 monthly fee, up to 100 free transactions per month, interest rate 0.25% APY
+                <br>Premium Checking: $15 monthly fee, unlimited transactions, free ATM rebates, interest rate 0.50% APY
+                </p>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            
+            <div class="contact-content">
+                <h2> Loans: </h2>
+                <p> 
+                    Auto Loan: New car loan starting at 3.75% APR, used car loan starting at 4.50% APR
+                <br>Mortgage: 30-year fixed-rate mortgage starting at 5.25% APR, 15-year fixed-rate mortgage starting at 4.75% APR
+                </p>
+            </div>
+            <div class="contact-item">
+                <img src="{{url_for('static', filename='p2.jpg')}}" alt="Phone">
+            </div>
+        </section>
+
+        <section class="help-section">
+            <div class="help-item">
+                <img src="{{url_for('static', filename='p4.jpg')}}" alt="FAQ">
+            </div>
+            <div class="help-content">
+                <h2> Current Accounts: </h2>
+                <p> 
+                    Basic Current Account: $0 monthly fee, unlimited deposits and withdrawals
+                <br>Premium Current Account: $10 monthly fee, additional benefits like check printing, bill pay services
+                </p>
+            </div>
+        </section>
+        </main>
+        <footer>
+            <p>&copy; The Piggy Bank 2024</p>
+        </footer>
+</body>
+</html>

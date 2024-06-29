@@ -1,0 +1,72 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: ivory;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1em;
+}
+
+main {
+    padding: 40px;
+}
+
+section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.help-item, .contact-item {
+    padding: 20px;
+    border-radius: 5px;
+    margin-right: 40px;
+    margin-left: 40px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.help-item img, .contact-item img {
+    width: 250px;
+    margin-bottom: 0; /* Remove margin-bottom for better alignment */
+}
+
+.help-content, .contact-content {
+    width: 55%;
+    text-align: left;
+}
+
+.help-content h2, .contact-content h2 {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.help-content p, .contact-content p {
+    line-height: 40px;
+}
+
+.help-content a, .contact-content a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+}
+
+.help-content a:hover{
+    text-decoration: underline;
+    color: #000000;
+    font-weight: bold;
+}
+
+footer {
+    transform: translateY(30%);
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(31, 67, 67);
+}

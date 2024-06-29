@@ -1,0 +1,84 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: ivory; 
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+main {
+    padding: 40px;
+}
+
+section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.user-details, .transaction-history {
+    padding: 20px;
+    border-radius: 5px;
+    margin-right: 40px;
+    background-color: ivory; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 100%; 
+}
+
+.user-details h2, .transaction-history h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.details {
+    margin-bottom: 20px;
+}
+
+.details p {
+    margin: 5px 0;
+}
+
+.transaction-history table {
+    width: 100%; 
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: rgba(31, 67, 67,0.2);
+}
+
+.transaction-history th, .transaction-history td {
+    padding: 10px;
+    text-align: left;
+    
+    border-bottom: 1px solid #000000;
+}
+
+.transaction-history th {
+    background-color: rgb(31, 67, 67);;
+    color: white;
+}
+
+.transaction-history tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(31, 67, 67);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

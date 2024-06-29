@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Contact Us</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/help.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><p>The Piggy Bank</p></div>
+        <ul>
+            <li><a href="{{ url_for('views.home') }}"> Home</a></li>
+            <li><a href="{{ url_for('views.account') }}">Account</a></li>
+            <li><a href="{{ url_for('views.transactions') }}">Transactions</a></li>
+            <li><a href="{{ url_for('views.plans') }}">Plans</a></li>
+            <li><a href="{{ url_for('views.help') }}">Help</a></li>
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li> 
+        </ul>
+        </div>
+    </nav>
+    
+    <main>
+        <section class="help-section">
+            <div class="help-item">
+                <img src="{{url_for('static', filename='faq.png')}}" alt="FAQ">
+            </div>
+            <div class="help-content">
+                <h2> Frequently Asked Questions</h2>
+                <p> Find answers to common questions about our products, services, and banking.</p>
+                <a href="{{ url_for('views.faq') }}">View FAQs</a>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <div class="contact-item">
+                <img src="{{url_for('static', filename='cs.webp')}}" alt="Phone">
+            </div>
+            <div class="contact-content">
+                <h2> Phone Banking</h2>
+                <p> Call us at 123456789 to speak with a customer service representative.</p>
+            </div>
+        </section>
+
+        </main>
+        <footer>
+            <p>&copy; The Piggy Bank 2024</p>
+        </footer>
+</body>
+</html>

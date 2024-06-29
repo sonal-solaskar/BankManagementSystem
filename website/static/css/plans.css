@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+header {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1em;
+}
+
+main {
+    padding: 40px;
+}
+
+section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.help-item, .contact-item {
+    padding: 20px;
+    border-radius: 5px;
+    margin-right: 40px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+.help-item img, .contact-item img {
+    width: 260px;
+    margin-bottom: 0; 
+    background-color: white;
+}
+
+.help-content, .contact-content {
+    width: 100%;
+    text-align: left;
+}
+
+.help-content h2, .contact-content h2 {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.help-content p, .contact-content p {
+    line-height: 40px;
+}
+
+.help-content a, .contact-content a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+}
+
+.help-content a:hover{
+    text-decoration: underline;
+    color: #000000;
+    font-weight: bold;
+}
+
+footer {
+    transform: translateY(30%);
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(31, 67, 67);
+}
