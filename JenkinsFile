@@ -1,0 +1,36 @@
+pipeline {
+  agent any
+  stages {
+    stage('Workspace Cleanup') {
+      steps {
+        // Clean before build
+        cleanWs()
+        echo 'Cleaning workspace...'
+      }
+    }
+    stage('Checkout Git Branch') {
+      steps {
+        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/RutujaBangera/To-Do-list.git']])
+      }
+    }
+   stage('Build Application') {
+    steps {
+        git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/RutujaBangera/To-Do-list.git'
+        bat 'python -m pip install --upgrade pip'
+        bat 'pip install -r todo_app/requirements.txt'
+        bat 'python todo_app/main.py'
+        echo 'Build completed successfully!'
+    }
+   }
+   stage('Test') {
+    steps {
+        echo "The job has been tested."
+    }
+   }
+  }
+  post {
+        always {
+            echo 'Pipeline execution completed.'
+        }
+    }
+}
