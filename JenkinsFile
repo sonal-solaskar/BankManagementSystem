@@ -17,25 +17,29 @@ pipeline {
         git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/RutujaBangera/BankManagementSystem.git'
         bat 'python -m pip install --upgrade pip'
         bat 'pip install -r requirements.txt'
-
-        // Run Flask app in the background
-        bat 'start /B python main.py'
-
-        echo 'Application started successfully!'
+        bat 'python main.py'
+        echo 'Build completed successfully!'
       }
     }
     stage('Test') {
       steps {
-        echo 'Running tests...'
-         bat 'set PYTHONPATH=%cd%'
-        // Run pytest and generate test report
-        bat 'pytest --html=report.html'
+        echo 'Running tests using pytest...'
+        bat 'pytest --junitxml=test-results.xml' // Running pytest and saving results
+      }
+      post {
+        success {
+          echo 'Tests passed successfully!'
+        }
+        failure {
+          echo 'Tests failed! Check test-results.xml for details.'
+        }
       }
     }
   }
   post {
     always {
       echo 'Pipeline execution completed.'
+      archiveArtifacts artifacts: 'test-results.xml', fingerprint: true
     }
   }
 }
