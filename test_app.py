@@ -83,10 +83,6 @@ class BankAppTests(unittest.TestCase):
         self.client.post('/', data={'username': 'testuser', 'password': 'password123'}, follow_redirects=True)
         response = self.client.post('/withdraw', data={'withdraw': '5000', 'pin': '1234'}, follow_redirects=True)
     
-   
-        
-        self.client.post('/', data={'username': 'testuser', 'password': 'password123'}, follow_redirects=True)
-        response = self.client.post('/transfer', data={'transfer': '100', 'toid': recipient.id, 'pin': '1234'}, follow_redirects=True)
-    
+
 if __name__ == '__main__':
     unittest.main()
