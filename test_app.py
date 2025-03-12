@@ -12,10 +12,10 @@ def client():
     
     with app.app_context():
         db.create_all()
-        test_user = User(username='testuser', mobile='9999999999',
-                         password=generate_password_hash('testpass', method='pbkdf2:sha256'),
-                         pin=generate_password_hash('1234', method='pbkdf2:sha256'),
-                         age=25, gender='M', account='12345678', balance=1000.0)
+        test_user = User(username='vihaan_shetty', mobile='9326913788',
+                         password=generate_password_hash('pass', method='pbkdf2:sha956'),
+                         pin=generate_password_hash('1716', method='pbkdf2:sha956'),
+                         age=35, gender='M', account='1236578', balance=100.0)
         db.session.add(test_user)
         db.session.commit()
 
@@ -23,7 +23,7 @@ def client():
 
 # Authentication Tests
 def test_login(client):
-    response = client.post('/login', data={'username': 'testuser', 'password': 'testpass'}, follow_redirects=True)
+    response = client.post('/login', data={'username': 'vihaan_shetty', 'password': 'pass'}, follow_redirects=True)
     assert b'Invalid username or password' not in response.data
 
 def test_invalid_login(client):
