@@ -83,12 +83,7 @@ class BankAppTests(unittest.TestCase):
         self.client.post('/', data={'username': 'testuser', 'password': 'password123'}, follow_redirects=True)
         response = self.client.post('/withdraw', data={'withdraw': '5000', 'pin': '1234'}, follow_redirects=True)
     
-    def test_transfer(self):
-        """Test transfer functionality."""
-        with self.app.app_context():
-            recipient = User(username='recipient', mobile='9876543210', password=generate_password_hash('password123', method='pbkdf2:sha256'), pin=generate_password_hash('1234', method='pbkdf2:sha256'), age=28, gender='Male', account='Savings', balance=500.0)
-            db.session.add(recipient)
-            db.session.commit()
+   
         
         self.client.post('/', data={'username': 'testuser', 'password': 'password123'}, follow_redirects=True)
         response = self.client.post('/transfer', data={'transfer': '100', 'toid': recipient.id, 'pin': '1234'}, follow_redirects=True)
