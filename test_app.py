@@ -1,7 +1,7 @@
 import pytest
 from flask import url_for
 from website import create_app, db
-from app.models import User
+from website.models import User
 from werkzeug.security import generate_password_hash
 
 @pytest.fixture
