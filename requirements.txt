@@ -4,4 +4,8 @@ flask_sqlalchemy
 requests
 flask-login
 mysqlclient
-pytest pytest-flask pytest-html
+pytest 
+pytest-flask 
+pytest-html
+Werkzeug
+
