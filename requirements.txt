@@ -8,4 +8,8 @@ pytest
 pytest-flask 
 pytest-html
 Werkzeug
-
+faker             
+coverage         
+pytest-cov        
+httpx             
+flask-wtf         
