@@ -27,7 +27,7 @@ pipeline {
     stage('Test') {
       steps {
         echo 'Running tests...'
-        
+         bat 'set PYTHONPATH=%cd%'
         // Run pytest and generate test report
         bat 'pytest --html=report.html'
       }
