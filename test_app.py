@@ -38,13 +38,13 @@ def client():
 
 # Test for valid login
 def test_login(client):
-    response = client.post('/login', data={'username': 'vihaan_shetty', 'password': 'pass'}, follow_redirects=True)
+    response = client.post('/', data={'username': 'vihaan_shetty', 'password': 'pass'}, follow_redirects=True)
     assert b'Invalid username or password' not in response.data
     assert b'Welcome' in response.data  # Adjust based on your success message
 
 # Test for invalid login
 def test_invalid_login(client):
-    response = client.post('/login', data={'username': 'wronguser', 'password': 'wrongpass'}, follow_redirects=True)
+    response = client.post('/', data={'username': 'wronguser', 'password': 'wrongpass'}, follow_redirects=True)
     assert b'Invalid username or password' in response.data
 
 # Test for user registration
@@ -53,7 +53,8 @@ def test_register(client):
         # Remove test user if exists
         User.query.filter_by(mobile="8888888888").delete()
         db.session.commit()
-    import pytest
+        
+import pytest
 from flask import url_for
 from website import create_app, db
 from website.models import User
@@ -93,13 +94,13 @@ def client():
 
 # Test for valid login
 def test_login(client):
-    response = client.post('/login', data={'username': 'vihaan_shetty', 'password': 'pass'}, follow_redirects=True)
+    response = client.post('/', data={'username': 'vihaan_shetty', 'password': 'pass'}, follow_redirects=True)
     assert b'Invalid username or password' not in response.data
     assert b'Welcome' in response.data  # Adjust based on your success message
 
 # Test for invalid login
 def test_invalid_login(client):
-    response = client.post('/login', data={'username': 'wronguser', 'password': 'wrongpass'}, follow_redirects=True)
+    response = client.post('/', data={'username': 'wronguser', 'password': 'wrongpass'}, follow_redirects=True)
     assert b'Invalid username or password' in response.data
 
 # Test for user registration
