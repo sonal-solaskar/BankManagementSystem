@@ -33,24 +33,25 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                script {
-                    sh '''
-                        docker run --rm --name test-container ${DOCKER_IMAGE}:${DOCKER_TAG} pytest --junitxml=test-results.xml
-                    '''
-                    sh 'docker cp test-container:/app/test-results.xml .'
-                }
-                echo 'Tests completed!'
-            }
-            post {
-                success {
-                    echo 'Tests passed successfully!'
-                }
-                failure {
-                    echo 'Tests failed! Check test-results.xml for details.'
-                }
-            }
-        }
+          steps {
+              script {
+                  sh 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
+                  
+                  sh 'docker cp test-container:/app/test-results.xml .'
+                  
+                  sh 'docker compose -f docker-compose.test.yml down'
+              }
+              echo 'Tests completed!'
+          }
+          post {
+              success {
+                  echo 'Tests passed successfully!'
+              }
+              failure {
+                  echo 'Tests failed! Check test-results.xml for details.'
+              }
+           }
+      }
 
         stage('Deploy to Test Environment') {
             steps {
