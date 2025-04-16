@@ -1,6 +1,6 @@
 import pytest
-from website import create_app, db
-from website.models import User
+from ..website import create_app, db
+from ..website.models import User
 from werkzeug.security import generate_password_hash
 
 @pytest.fixture(scope='function')
