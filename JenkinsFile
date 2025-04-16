@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     // Assuming your Dockerfile and docker-compose.yml are in the root of the checked-out repository
-                    sh 'docker compose up --build -d --no-cache'
+                    sh 'docker compose up --build --no-cache -d'
                 }
                 echo 'Docker image built and services started successfully!'
             }
