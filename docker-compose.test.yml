@@ -1,20 +1,7 @@
 services:
-  test-db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: test_bank
-    ports:
-      - "3307:3306"
-  
   test-app:
     build: .
     environment:
-      - MYSQL_HOST=test-db
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root123
-      - MYSQL_DATABASE=test_bank
       - FLASK_ENV=testing
-    depends_on:
-      - test-db
     command: ["pytest", "--junitxml=test-results.xml"]
+

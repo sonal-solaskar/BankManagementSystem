@@ -34,11 +34,7 @@ pipeline {
       steps {
         script {
           sh '''
-            docker run --name test-container \
-              -e MYSQL_HOST=dummy \
-              -e MYSQL_DATABASE=test_bank \
-              ${DOCKER_IMAGE}:${DOCKER_TAG} \
-              pytest --junitxml=test-results.xml
+            docker run --name test-container ${DOCKER_IMAGE}:${DOCKER_TAG} pytest --junitxml=test-results.xml
           '''
           sh 'docker cp test-container:/app/test-results.xml .'
           sh 'docker rm test-container'
@@ -76,3 +72,4 @@ pipeline {
     }
   }
 }
+

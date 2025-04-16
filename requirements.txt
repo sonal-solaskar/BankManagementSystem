@@ -3,7 +3,6 @@ gunicorn
 flask_sqlalchemy
 requests
 flask-login
-mysqlclient
 pytest 
 pytest-flask 
 pytest-html
@@ -12,4 +11,4 @@ faker
 coverage         
 pytest-cov        
 httpx             
-flask-wtf         
+flask-wtf

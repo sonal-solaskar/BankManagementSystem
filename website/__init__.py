@@ -1,22 +1,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-import os
-
 db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'SecretKey'
-    
-    # Get database connection details from environment variables or use defaults
-    mysql_host = os.environ.get('MYSQL_HOST', 'localhost')
-    mysql_user = os.environ.get('MYSQL_USER', 'root')
-    mysql_password = os.environ.get('MYSQL_PASSWORD', 'root123')
-    mysql_database = os.environ.get('MYSQL_DATABASE', 'bank')
-    
-    # Configure database URI using environment variables
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{mysql_user}:{mysql_password}@{mysql_host}:3306/{mysql_database}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bank.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)

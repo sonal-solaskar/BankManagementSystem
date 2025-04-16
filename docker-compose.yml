@@ -4,23 +4,6 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MYSQL_HOST=db
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root123
-      - MYSQL_DATABASE=bank
-    depends_on:
-      - db
+      - FLASK_ENV=production
     restart: unless-stopped
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: bank
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./mysql/custom.cnf:/etc/mysql/conf.d/custom.cnf
-    command: --pid-file=/var/lib/mysql/mysql.pid
-volumes:
-  mysql_data:
+
