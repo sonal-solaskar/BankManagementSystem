@@ -40,7 +40,7 @@ pipeline {
 
                   sh 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
                   
-                  sh 'docker cp test-app:/app/test-results.xml .'
+                  sh 'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
                   
                   sh 'docker compose -f docker-compose.test.yml down'
               }
