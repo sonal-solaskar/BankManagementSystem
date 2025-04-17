@@ -2,8 +2,13 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'bank-management-system'
-        DOCKER_TAG = "${env.BUILD_ID}"
+        DOCKER_IMAGE_NAME = 'omalve/bank-management-system'  
+        DOCKER_TAG        = "${env.BUILD_ID}"               
+        FULL_IMAGE_NAME   = "${env.DOCKER_IMAGE_NAME}:${env.DOCKER_TAG}"
+
+        EC2_HOST = 'ec2-xx-xx-xx-xx.compute-1.amazonaws.com'
+        EC2_USER = 'ec2-user'
+        SSH_KEY  = '/home/jenkins/.ssh/om.pem'
     }
 
     stages {
@@ -14,54 +19,107 @@ pipeline {
             }
         }
 
-          stage('Checkout Git Branch') {
+        stage('Checkout Git Branch') {
             steps {
-                checkout scmGit(branches: [[name: '*/docker-support']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/Om-Alve/BankManagementSystem.git']])
+                checkout scmGit(
+                    branches: [[name: '*/docker-support']],
+                    userRemoteConfigs: [[
+                        credentialsId: 'github-credentials',
+                        url: 'https://github.com/Om-Alve/BankManagementSystem.git'
+                    ]]
+                )
             }
         }
-
-
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Assuming your Dockerfile and docker-compose.yml are in the root of the checked-out repository
-                    sh 'docker compose build --no-cache'
-                    sh 'docker compose up -d'
+                    def img = env.FULL_IMAGE_NAME
+                    if (isUnix()) {
+                        sh  "docker build -t ${img} ."
+                    } else {
+                        bat "docker build -t ${img} ."
+                    }
                 }
-                echo 'Docker image built and services started successfully!'
+                echo "Docker image ${env.FULL_IMAGE_NAME} built successfully!"
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    script {
+                        def img = env.FULL_IMAGE_NAME
+                        if (isUnix()) {
+                            sh  'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                            sh  "docker push ${img}"
+                        } else {
+                            bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                            bat "docker push ${img}"
+                        }
+                    }
+                    echo "Docker image pushed: ${env.FULL_IMAGE_NAME}"
+                }
             }
         }
 
         stage('Run Tests') {
-          steps {
-              script {
-                  sh 'docker compose -f docker-compose.test.yml build --no-cache'
-
-                  sh 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
-                  
-                  sh 'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
-                  
-                  sh 'docker compose -f docker-compose.test.yml down'
-              }
-              echo 'Tests completed!'
-          }
-          post {
-              success {
-                  echo 'Tests passed successfully!'
-              }
-              failure {
-                  echo 'Tests failed! Check test-results.xml for details.'
-              }
-           }
-      }
-
-        stage('Deploy to Test Environment') {
             steps {
-                echo 'No explicit deployment step needed as services are already running from the "Build Docker Image" stage.'
-                echo 'If further deployment steps are required, add them here.'
-                // If you need to manage the running containers (e.g., restart, scale), you can use docker compose commands here.
-                // Example: sh 'docker compose restart'
+                script {
+                    if (isUnix()) {
+                        sh  'docker compose -f docker-compose.test.yml build --no-cache'
+                        sh  'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
+                        sh  'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
+                        sh  'docker compose -f docker-compose.test.yml down'
+                    } else {
+                        bat 'docker-compose -f docker-compose.test.yml build --no-cache'
+                        bat 'docker-compose -f docker-compose.test.yml up --abort-on-container-exit'
+                        bat 'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
+                        bat 'docker-compose -f docker-compose.test.yml down'
+                    }
+                }
+                echo 'Tests completed!'
+            }
+            post {
+                success { echo 'Tests passed successfully!' }
+                failure { echo 'Tests failed! Check test-results.xml for details.' }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    script {
+                        def user = env.EC2_USER
+                        def host = env.EC2_HOST
+                        def key  = env.SSH_KEY
+                        def img  = env.FULL_IMAGE_NAME
+
+                        // Compose the remote SSH command
+                        def remote = [
+                            "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin",
+                            "docker pull ${img}",
+                            "docker stop bank-app || true",
+                            "docker rm bank-app   || true",
+                            "docker run -d --name bank-app -p 80:5000 ${img}"
+                        ].join(" && ")
+
+                        if (isUnix()) {
+                            sh  "ssh -o StrictHostKeyChecking=no -i ${key} ${user}@${host} '${remote}'"
+                        } else {
+                            // On Windows agents, wrap the same in double‑quotes
+                            bat "ssh -o StrictHostKeyChecking=no -i ${key} ${user}@${host} \"${remote.replace('$', '%')}\""
+                        }
+                    }
+                }
             }
         }
     }
@@ -71,11 +129,8 @@ pipeline {
             echo 'Pipeline execution completed.'
             archiveArtifacts artifacts: 'test-results.xml', fingerprint: true, allowEmptyArchive: true
         }
-        success {
-            echo 'Pipeline succeeded! Application is deployed and running.'
-        }
-        failure {
-            echo 'Pipeline failed! Check the logs for details.'
-        }
+        success { echo 'Pipeline succeeded! Application is deployed and running.' }
+        failure { echo 'Pipeline failed! Check the logs for details.' }
     }
 }
+
