@@ -16,7 +16,7 @@ pipeline {
 
           stage('Checkout Git Branch') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: '']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/RutujaBangera/BankManagementSystem.git']])
             }
         }
 
