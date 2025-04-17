@@ -59,7 +59,7 @@ pipeline {
                             sh  "docker push ${img}"
                         } else {
                             bat 'echo %DOCKER_PASS% > temp.txt'
-                            bat 'cat %temp.txt%'
+                            bat 'cat temp.txt'
                             bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
                             bat "docker push ${img}"
                         }
