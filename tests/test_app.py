@@ -1,7 +1,7 @@
 import unittest
 from flask import Flask
-from website import create_app, db  # Import your Flask app factory function
-from website.models import User  # Import User model from models.py
+from ..website import create_app, db  # Import your Flask app factory function
+from ..website.models import User  # Import User model from models.py
 from werkzeug.security import generate_password_hash
 
 class BankAppTests(unittest.TestCase):
@@ -10,7 +10,7 @@ class BankAppTests(unittest.TestCase):
         """Set up test client and database."""
         self.app = create_app()
         self.app.config['TESTING'] = True
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  # Use in-memory SQLite for tests
         self.client = self.app.test_client()
         
         with self.app.app_context():

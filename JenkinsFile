@@ -1,45 +1,81 @@
 pipeline {
-  agent any
-  stages {
-    stage('Workspace Cleanup') {
-      steps {
-        cleanWs()
-        echo 'Cleaning workspace...'
-      }
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'bank-management-system'
+        DOCKER_TAG = "${env.BUILD_ID}"
     }
-    stage('Checkout Git Branch') {
-      steps {
-        checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/RutujaBangera/BankManagementSystem.git']])
+
+    stages {
+        stage('Workspace Cleanup') {
+            steps {
+                cleanWs()
+                echo 'Cleaning workspace...'
+            }
+        }
+
+          stage('Checkout Git Branch') {
+            steps {
+                checkout scmGit(branches: [[name: '*/docker-support']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/Om-Alve/BankManagementSystem.git']])
+            }
+        }
+
+
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Assuming your Dockerfile and docker-compose.yml are in the root of the checked-out repository
+                    sh 'docker compose build --no-cache'
+                    sh 'docker compose up -d'
+                }
+                echo 'Docker image built and services started successfully!'
+            }
+        }
+
+        stage('Run Tests') {
+          steps {
+              script {
+                  sh 'docker compose -f docker-compose.test.yml build --no-cache'
+
+                  sh 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
+                  
+                  sh 'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
+                  
+                  sh 'docker compose -f docker-compose.test.yml down'
+              }
+              echo 'Tests completed!'
+          }
+          post {
+              success {
+                  echo 'Tests passed successfully!'
+              }
+              failure {
+                  echo 'Tests failed! Check test-results.xml for details.'
+              }
+           }
       }
+
+        stage('Deploy to Test Environment') {
+            steps {
+                echo 'No explicit deployment step needed as services are already running from the "Build Docker Image" stage.'
+                echo 'If further deployment steps are required, add them here.'
+                // If you need to manage the running containers (e.g., restart, scale), you can use docker compose commands here.
+                // Example: sh 'docker compose restart'
+            }
+        }
     }
-    stage('Build Application') {
-      steps {
-        git branch: 'main', credentialsId: 'github-credentials', url: 'https://github.com/RutujaBangera/BankManagementSystem.git'
-        bat 'python -m pip install --upgrade pip'
-        bat 'pip install -r requirements.txt'
-        bat 'python main.py'
-        echo 'Build completed successfully!'
-      }
-    }
-    stage('Test') {
-      steps {
-        echo 'Running tests using pytest...'
-        bat 'pytest --junitxml=test-results.xml' // Running pytest and saving results
-      }
-      post {
+
+    post {
+        always {
+            echo 'Pipeline execution completed.'
+            archiveArtifacts artifacts: 'test-results.xml', fingerprint: true, allowEmptyArchive: true
+        }
         success {
-          echo 'Tests passed successfully!'
+            echo 'Pipeline succeeded! Application is deployed and running.'
         }
         failure {
-          echo 'Tests failed! Check test-results.xml for details.'
+            echo 'Pipeline failed! Check the logs for details.'
         }
-      }
     }
-  }
-  post {
-    always {
-      echo 'Pipeline execution completed.'
-      archiveArtifacts artifacts: 'test-results.xml', fingerprint: true
-    }
-  }
 }
