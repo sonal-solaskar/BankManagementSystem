@@ -3,15 +3,19 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
+from dotenv import load_dotenv
 
 db = SQLAlchemy()
 
 def create_app():
+    load_dotenv()
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'SecretKey'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.getcwd(), 'bank.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+    db_user = os.environ['DB_USER']
+    db_pass = os.environ['DB_PASS']
+    db_host = os.environ['DB_HOST']
+    db_name = os.environ['DB_NAME']
+    # For MySQL-compatible Aurora:
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{db_user}:{db_pass}@{db_host}:5432/{db_name}"
     db.init_app(app)
     
     from .views import views  
