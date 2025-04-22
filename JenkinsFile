@@ -8,8 +8,8 @@ pipeline {
         DOCKER_TAG        = "${env.BUILD_ID}"               
         FULL_IMAGE_NAME   = "${env.DOCKER_IMAGE_NAME}:${env.DOCKER_TAG}"
 
-        EC2_HOST = 'ec2-65-2-150-23.ap-south-1.compute.amazonaws.com'
-        EC2_USER = 'ubuntu'
+        EC2_HOST = 'ec2-xx-xx-xx-xx.compute-1.amazonaws.com'
+        EC2_USER = 'ec2-user'
         SSH_KEY  = 'C:\\jenkins-agent\\.ssh\\bms.pem'  // Updated path for Windows
     }
 
@@ -33,6 +33,15 @@ pipeline {
             }
         }
 
+        stage('Docker Health Check') {
+            steps {
+                bat 'docker info'
+                bat 'docker context ls'
+                bat 'docker context use default'
+                echo 'Docker environment verified'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -45,11 +54,17 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    // inside this block Jenkins will automatically log in, push, then log out
-                    docker.withRegistry('https://registry-1.docker.io/', 'docker-hub-credentials') {
-                        docker.image(env.FULL_IMAGE_NAME).push()
-                    }
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    // Login to Docker Hub properly with password-stdin
+                    bat "echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin"
+                    // Push the image
+                    bat "docker push ${env.FULL_IMAGE_NAME}"
+                    // Logout for security
+                    bat "docker logout"
                 }
             }
         }
@@ -57,9 +72,14 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
+                    // Make sure we use the correct Docker Compose command for Windows
                     bat 'docker compose -f docker-compose.test.yml build --no-cache'
                     bat 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
-                    bat 'docker cp bankmanagementsystem_pipeline-test-app-1:/app/test-results.xml .'
+                    
+                    // Get the actual container name - might differ from what you expect
+                    bat 'for /f "tokens=*" %%i in (\'docker ps -a --filter "name=pipeline-test-app" --format "{{.Names}}"\') do set CONTAINER_NAME=%%i'
+                    bat 'if defined CONTAINER_NAME (docker cp %CONTAINER_NAME%:/app/test-results.xml .) else (echo "Container not found, check naming pattern")'
+                    
                     bat 'docker compose -f docker-compose.test.yml down'
                 }
                 echo 'Tests completed!'
@@ -82,18 +102,24 @@ pipeline {
                         def host = env.EC2_HOST
                         def key  = env.SSH_KEY
                         def img  = env.FULL_IMAGE_NAME
+                        def dockerUser = env.DOCKER_USER
+                        def dockerPass = env.DOCKER_PASS
 
-                        // Compose the remote SSH command for Windows
-                        def remote = [
-                            "echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin",
-                            "docker pull ${img}",
-                            "docker stop bank-app || true",
-                            "docker rm bank-app || true",
-                            "docker run -d --name bank-app -p 80:5000 ${img}"
-                        ].join(" && ")
-
-                        // On Windows, use double quotes and escape paths properly
-                        bat "ssh -o StrictHostKeyChecking=no -i \"${key}\" ${user}@${host} \"${remote}\""
+                        // Write SSH commands to a script file to avoid command-line length/quoting issues
+                        writeFile file: 'deploy-commands.sh', text: """#!/bin/bash
+echo '${dockerPass}' | docker login -u ${dockerUser} --password-stdin
+docker pull ${img}
+docker stop bank-app || true
+docker rm bank-app || true
+docker run -d --name bank-app -p 80:5000 ${img}
+"""
+                        
+                        // Fix permissions on the script and SSH key
+                        bat "icacls \"${key}\" /inheritance:r /grant:r \"%USERNAME%\":F"
+                        
+                        // Copy the script to EC2 and execute it
+                        bat "scp -o StrictHostKeyChecking=no -i \"${key}\" deploy-commands.sh ${user}@${host}:/home/${user}/deploy-commands.sh"
+                        bat "ssh -o StrictHostKeyChecking=no -i \"${key}\" ${user}@${host} \"chmod +x /home/${user}/deploy-commands.sh && /home/${user}/deploy-commands.sh\""
                     }
                 }
             }
