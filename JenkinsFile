@@ -8,8 +8,8 @@ pipeline {
         DOCKER_TAG        = "${env.BUILD_ID}"               
         FULL_IMAGE_NAME   = "${env.DOCKER_IMAGE_NAME}:${env.DOCKER_TAG}"
 
-        EC2_HOST = 'ec2-xx-xx-xx-xx.compute-1.amazonaws.com'
-        EC2_USER = 'ec2-user'
+        EC2_HOST = 'ec2-65-2-150-23.ap-south-1.compute.amazonaws.com'
+        EC2_USER = 'ubuntu'
         SSH_KEY  = 'C:\\jenkins-agent\\.ssh\\bms.pem'  // Updated path for Windows
     }
 
@@ -52,24 +52,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-hub-credentials',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    // Login to Docker Hub properly with password-stdin
-                    bat "echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin"
-                    // Push the image
-                    bat "docker push ${env.FULL_IMAGE_NAME}"
-                    // Logout for security
-                    bat "docker logout"
-                }
-            }
-        }
-
-        stage('Run Tests') {
+       stage('Run Tests') {
             steps {
                 script {
                     // Make sure we use the correct Docker Compose command for Windows
@@ -89,6 +72,23 @@ pipeline {
                 failure { echo 'Tests failed! Check test-results.xml for details.' }
             }
         }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    // Login to Docker Hub properly with password-stdin
+                    bat "echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin"
+                    // Push the image
+                    bat "docker push ${env.FULL_IMAGE_NAME}"
+                    // Logout for security
+                    bat "docker logout"
+                }
+            }
+        }
+
 
         stage('Deploy to EC2') {
             steps {
