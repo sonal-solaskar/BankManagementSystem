@@ -1,9 +1,16 @@
 pipeline {
-    agent any
+    agent {
+        label 'windows'  // Use your Windows agent
+    }
 
     environment {
-        DOCKER_IMAGE = 'bank-management-system'
-        DOCKER_TAG = "${env.BUILD_ID}"
+        DOCKER_IMAGE_NAME = 'omalve/bank-management-system'  
+        DOCKER_TAG        = "${env.BUILD_ID}"               
+        FULL_IMAGE_NAME   = "${env.DOCKER_IMAGE_NAME}:${env.DOCKER_TAG}"
+
+        EC2_HOST = 'ec2-65-2-150-23.ap-south-1.compute.amazonaws.com'
+        EC2_USER = 'ubuntu'
+        SSH_KEY  = 'C:\\jenkins-agent\\.ssh\\bms.pem'  // Updated path for Windows
     }
 
     stages {
@@ -14,54 +21,101 @@ pipeline {
             }
         }
 
-          stage('Checkout Git Branch') {
+        stage('Checkout Git Branch') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/RutujaBangera/BankManagementSystem.git']])
             }
         }
 
-
+        stage('Docker Health Check') {
+            steps {
+                bat 'docker info'
+                bat 'docker context ls'
+                bat 'docker context use default'
+                echo 'Docker environment verified'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Assuming your Dockerfile and docker-compose.yml are in the root of the checked-out repository
-                    sh 'docker compose build --no-cache'
-                    sh 'docker compose up -d'
+                    def img = env.FULL_IMAGE_NAME
+                    bat "docker build -t ${img} ."
                 }
-                echo 'Docker image built and services started successfully!'
+                echo "Docker image ${env.FULL_IMAGE_NAME} built successfully!"
             }
         }
 
-        stage('Run Tests') {
-          steps {
-              script {
-                  sh 'docker compose -f docker-compose.test.yml build --no-cache'
-
-                  sh 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
-                  
-                  sh 'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
-                  
-                  sh 'docker compose -f docker-compose.test.yml down'
-              }
-              echo 'Tests completed!'
-          }
-          post {
-              success {
-                  echo 'Tests passed successfully!'
-              }
-              failure {
-                  echo 'Tests failed! Check test-results.xml for details.'
-              }
-           }
-      }
-
-        stage('Deploy to Test Environment') {
+       stage('Run Tests') {
             steps {
-                echo 'No explicit deployment step needed as services are already running from the "Build Docker Image" stage.'
-                echo 'If further deployment steps are required, add them here.'
-                // If you need to manage the running containers (e.g., restart, scale), you can use docker compose commands here.
-                // Example: sh 'docker compose restart'
+                script {
+                    // Make sure we use the correct Docker Compose command for Windows
+                    bat 'docker compose -f docker-compose.test.yml build --no-cache'
+                    bat 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
+                    
+                    // Get the actual container name - might differ from what you expect
+                    bat 'for /f "tokens=*" %%i in (\'docker ps -a --filter "name=pipeline-test-app" --format "{{.Names}}"\') do set CONTAINER_NAME=%%i'
+                    bat 'if defined CONTAINER_NAME (docker cp %CONTAINER_NAME%:/app/test-results.xml .) else (echo "Container not found, check naming pattern")'
+                    
+                    bat 'docker compose -f docker-compose.test.yml down'
+                }
+                echo 'Tests completed!'
+            }
+            post {
+                success { echo 'Tests passed successfully!' }
+                failure { echo 'Tests failed! Check test-results.xml for details.' }
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    // Login to Docker Hub properly with password-stdin
+                    bat "echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin"
+                    // Push the image
+                    bat "docker push ${env.FULL_IMAGE_NAME}"
+                    // Logout for security
+                    bat "docker logout"
+                }
+            }
+        }
+
+
+        stage('Deploy to EC2') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    script {
+                        def user = env.EC2_USER
+                        def host = env.EC2_HOST
+                        def key  = env.SSH_KEY
+                        def img  = env.FULL_IMAGE_NAME
+                        def dockerUser = env.DOCKER_USER
+                        def dockerPass = env.DOCKER_PASS
+
+                        // Write SSH commands to a script file to avoid command-line length/quoting issues
+                        writeFile file: 'deploy-commands.sh', text: """#!/bin/bash
+echo '${dockerPass}' | sudo docker login -u ${dockerUser} --password-stdin
+sudo docker pull ${img}
+sudo docker stop bank-app || true
+sudo docker rm bank-app || true
+sudo docker run -d --name bank-app -p 5000:5000 ${img}
+"""
+                        
+                        // Fix permissions on the script and SSH key
+                        bat "icacls \"${key}\" /inheritance:r /grant:r \"%USERNAME%\":F"
+                        
+                        // Copy the script to EC2 and execute it
+                        bat "scp -o StrictHostKeyChecking=no -i \"${key}\" deploy-commands.sh ${user}@${host}:/home/${user}/deploy-commands.sh"
+                        bat "ssh -o StrictHostKeyChecking=no -i \"${key}\" ${user}@${host} \"chmod +x /home/${user}/deploy-commands.sh && /home/${user}/deploy-commands.sh\""
+                    }
+                }
             }
         }
     }
@@ -71,11 +125,7 @@ pipeline {
             echo 'Pipeline execution completed.'
             archiveArtifacts artifacts: 'test-results.xml', fingerprint: true, allowEmptyArchive: true
         }
-        success {
-            echo 'Pipeline succeeded! Application is deployed and running.'
-        }
-        failure {
-            echo 'Pipeline failed! Check the logs for details.'
-        }
+        success { echo 'Pipeline succeeded! Application is deployed and running.' }
+        failure { echo 'Pipeline failed! Check the logs for details.' }
     }
 }
