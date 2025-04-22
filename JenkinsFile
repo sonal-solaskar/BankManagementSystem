@@ -62,12 +62,12 @@ pipeline {
                     if (isUnix()) {
                         sh  'docker compose -f docker-compose.test.yml build --no-cache'
                         sh  'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
-                        sh  'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
+                        sh  'docker cp bankmanagementsystem_pipeline-test-app-1:/app/test-results.xml .'
                         sh  'docker compose -f docker-compose.test.yml down'
                     } else {
                         bat 'docker-compose -f docker-compose.test.yml build --no-cache'
                         bat 'docker-compose -f docker-compose.test.yml up --abort-on-container-exit'
-                        bat 'docker cp bankmanagementsystem-test-app-1:/app/test-results.xml .'
+                        bat 'docker cp bankmanagementsystem_pipeline-test-app-1:/app/test-results.xml .'
                         bat 'docker-compose -f docker-compose.test.yml down'
                     }
                 }
