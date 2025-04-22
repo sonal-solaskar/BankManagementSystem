@@ -107,11 +107,11 @@ pipeline {
 
                         // Write SSH commands to a script file to avoid command-line length/quoting issues
                         writeFile file: 'deploy-commands.sh', text: """#!/bin/bash
-echo '${dockerPass}' | docker login -u ${dockerUser} --password-stdin
-docker pull ${img}
-docker stop bank-app || true
-docker rm bank-app || true
-docker run -d --name bank-app -p 80:5000 ${img}
+echo '${dockerPass}' | sudo docker login -u ${dockerUser} --password-stdin
+sudo docker pull ${img}
+sudo docker stop bank-app || true
+sudo docker rm bank-app || true
+sudo docker run -d --name bank-app -p 5000:5000 ${img}
 """
                         
                         // Fix permissions on the script and SSH key
