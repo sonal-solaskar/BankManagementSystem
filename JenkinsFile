@@ -8,9 +8,9 @@ pipeline {
         DOCKER_TAG        = "${env.BUILD_ID}"               
         FULL_IMAGE_NAME   = "${env.DOCKER_IMAGE_NAME}:${env.DOCKER_TAG}"
 
-        EC2_HOST = 'ec2-13-203-228-127.ap-south-1.compute.amazonaws.com'
+        EC2_HOST = 'ec2-35-154-188-77.ap-south-1.compute.amazonaws.com'
         EC2_USER = 'ubuntu'
-        SSH_KEY  = 'C:\\jenkins-agent\\.ssh\\bms.pem'  // Updated path for Windows
+        SSH_KEY  = 'C:\\jenkins-agent\\piggybank.pem'  // Updated path for Windows
     }
 
     stages {
