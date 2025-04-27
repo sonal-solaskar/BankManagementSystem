@@ -10,7 +10,7 @@ pipeline {
 
         EC2_HOST = 'ec2-35-154-188-77.ap-south-1.compute.amazonaws.com'
         EC2_USER = 'ubuntu'
-        SSH_KEY  = 'C:\\jenkins-agent\\piggybank.pem'  // Updated path for Windows
+        SSH_KEY  = 'C:\\jenkins-agent\\.ssh\\piggybank.pem'  // Updated path for Windows
     }
 
     stages {
