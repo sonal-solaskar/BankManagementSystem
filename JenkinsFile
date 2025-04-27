@@ -54,7 +54,7 @@ pipeline {
                     bat 'docker compose -f docker-compose.test.yml up --abort-on-container-exit'
                     
                     // Get the actual container name - might differ from what you expect
-                    bat 'for /f "tokens=*" %%i in (\'docker ps -a --filter "name=pipeline-test-app" --format "{{.Names}}"\') do set CONTAINER_NAME=%%i'
+                    bat 'for /f "tokens=*" %%i in (\'docker ps -a --filter "name=bank-test-app" --format "{{.Names}}"\') do set CONTAINER_NAME=%%i'
                     bat 'if defined CONTAINER_NAME (docker cp %CONTAINER_NAME%:/app/test-results.xml .) else (echo "Container not found, check naming pattern")'
                     
                     bat 'docker compose -f docker-compose.test.yml down'
